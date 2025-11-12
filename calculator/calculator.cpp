@@ -1,5 +1,3 @@
-// В этом файле определения функций.
-// За основу возьмите решение предыдущей задачи.
 #include <iostream>
 #include "calculator.h"
 #include <string>
@@ -17,7 +15,7 @@ bool ReadNumber(Number& result){
 
 bool RunCalculatorCycle(){
     string command;
-    Number current_number; 
+    Number current_number = 0; 
     Number saved_number = 0; 
     bool number_is_saved = false;
 
@@ -39,28 +37,28 @@ bool RunCalculatorCycle(){
             }
         }
         else if(command == "+"){
-            Number user_number; // число введённое пользователем
+            Number user_number = 0; // число введённое пользователем
             if(!(ReadNumber(user_number))){ 
                 return false;
             }
             current_number += user_number;
         }
         else if(command == "-"){
-            Number user_number;
+            Number user_number = 0;
             if(!(ReadNumber(user_number))){
                 return false;
             }
             current_number -= user_number;
         }
         else if(command == "*"){
-            Number user_number;
+            Number user_number = 0;
             if(!(ReadNumber(user_number))){
                 return false;
             }
             current_number *= user_number;
         }
         else if(command == "/"){
-            Number user_number;
+            Number user_number = 0;
             if(!(ReadNumber(user_number))){
                 return false;
             }
@@ -74,7 +72,7 @@ bool RunCalculatorCycle(){
             } 
         }
         else if(command == ":"){
-            Number user_number;
+            Number user_number = 0;
             if(!(ReadNumber(user_number))){       
             return false;
             }
@@ -84,7 +82,7 @@ bool RunCalculatorCycle(){
             current_number = 0;
         }
         else if(command == "**"){
-            Number user_number;
+            Number user_number = 0;
             if(!(ReadNumber(user_number))){
                 return false;
             }
