@@ -22,7 +22,7 @@ void Calculator::Sub(Number n){
 }
 void Calculator::Div(Number n) {
     if (n == 0) {
-        // устанавливаем infinity в зависимости от знака делителя
+        // устанавливаем infinity в зависимости от знака делителя.
         if (std::signbit(n)) {
             current_number = -std::numeric_limits<double>::infinity();
         } else {
