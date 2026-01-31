@@ -88,7 +88,6 @@ void MainWindow::PerformOperation(double second_num) {       // метод от�
 
     QString result_str = QString::number(result);       // преобразуем результат в строку
     QString normalized = NormalizeNumber(result_str);  // нормализуем строку
-
 }
 
 QString MainWindow::RemoveTrailingZeroes(const QString &text) {    // метод удаляет нули в начале строки!
@@ -118,7 +117,6 @@ QString MainWindow::NormalizeNumber(const QString &text) {     // метод н�
         return NormalizeNumber(RemoveTrailingZeroes(text)); // убираем все ненужные нули
     }
     return text;                                          // если ни одно из условий не выполяется, возвращаем исходную строку
-
 }
 
 void MainWindow::numbers_clicked() {                    //  метод отвечает за обработку нажатий на цифровые кнопки калькулятора!
@@ -134,7 +132,6 @@ void MainWindow::numbers_clicked() {                    //  метод отве�
         new_input = false;                    // уставливае на знач. нового числа флаг !> false
     }
       AddText(digit);                       //  добавляем цифру
-
 }
 
 void MainWindow::SetOperation(Operation op) {      // метод обрабатывает выбор операции +, −, ×, ÷, ^ и подготавливает к вводу второе число!
@@ -177,7 +174,6 @@ void MainWindow::AddText(const QString& suffix) {          // метод отв�
 
 }
 
-
 void MainWindow::SetText(const QString& text) {    // метод сохраняет и отображает результат в элементе интерфейса l_result
 
     input_number_ = NormalizeNumber(text);       // применяем нормализацию числа
@@ -185,7 +181,6 @@ void MainWindow::SetText(const QString& text) {    // метод сохраня�
     active_number_ = input_number_.toDouble(); // обновляем active_number_
 
 }
-
 
 void MainWindow::on_btn_clear_last_number_clicked() {    // удаление последней цифры
 
@@ -196,8 +191,6 @@ void MainWindow::on_btn_clear_last_number_clicked() {    // удаление п�
         input_number_.chop(1);     // удаляем последнюю цифру
         SetText(input_number_);   // обновляем l_result
     }
-
-
 }
 
 void MainWindow::on_btn_point_clicked() {  // метод кнопки точки (.)
@@ -227,7 +220,6 @@ void MainWindow::on_btn_plus_minus_clicked() {        // метод кнопки
     }
 
     SetText(input_number_);               // синхронизируем строку, экран и числовое значение
-
 }
 
 void MainWindow::on_btn_clear_clicked() {           // метод кнопки удаления (С)
@@ -239,44 +231,30 @@ void MainWindow::on_btn_clear_clicked() {           // метод кнопки �
 
 }
 
-
 void MainWindow::on_btn_pow_clicked() {               // (^)
 
     SetOperation(Operation::POWER);
-
-
 }
-
 
 void MainWindow::on_btn_divide_clicked() {            // (/)
 
     SetOperation(Operation::DIVISION);
-
 }
-
 
 void MainWindow::on_btn_multiply_clicked() {          // (*)
 
     SetOperation(Operation::MULTIPLICATION);
-
-
 }
-
 
 void MainWindow::on_btn_minus_clicked() {             // (-)
 
     SetOperation(Operation::SUBTRACTION);
-
-
 }
-
 
 void MainWindow::on_btn_plus_clicked() {              // (+)
 
     SetOperation(Operation::ADDITION);
-
 }
-
 
 void MainWindow::on_btn_equals_clicked() {                 //  метод кнопки равно (=)
 
@@ -317,9 +295,9 @@ void MainWindow::on_btn_equals_clicked() {                 //  метод кно
 
 void MainWindow::on_btn_mStore_clicked() {       // метод сохраненяет текущее число в память!
 
-    if (!std::isfinite(active_number_))
+    if (!std::isfinite(active_number_)) {
         return;
-
+    }
     memory = active_number_;                  // помещаем тек. число в память
     in_memory = true;                        // устанавливам знач true, которое указывает, что в памяти есть знач
     ui->l_memory->setText("M");             // выводим букву M и указваем user, что число сохранено
@@ -329,11 +307,10 @@ void MainWindow::on_btn_mStore_clicked() {       // метод сохранен�
 
 void MainWindow::on_btn_mRecall_clicked() {    // метод выводит в l_result сохраненное число из памяти MS!
 
-    if (!in_memory)                                                 // если в памяти ничего нет
+    if (!in_memory) {                                               // если в памяти ничего нет
         return;                                                    // ничего не делаем
-
+    }
     QString mem_str = NormalizeNumber(QString::number(memory));  // преобразуем число из памяти в строку
-
 
     if (current_operation_ != Operation::NO_OPERATION) {      // если операция уже выбрана
         input_number_ = mem_str;                             // делаем число из памяти как текущ. вводимое число
@@ -341,7 +318,6 @@ void MainWindow::on_btn_mRecall_clicked() {    // метод выводит в l
         active_number_ = memory;                           //  помещаем сохран значение в active_number
         return;
     }
-
 
     SetText(mem_str);                                  // выводим в l_result и обновляем input_number_ + active_number_
     first_number_ = active_number_;                   // обновляем первое число
@@ -354,6 +330,5 @@ void MainWindow::on_btn_mClear_clicked() {      // метод очищает п�
     memory = 0.0;                // очищаем память
     in_memory = false;          // значение флага false
     ui->l_memory->setText(""); // убираем заглавную букву M из l_memory
-
 }
 
