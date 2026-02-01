@@ -22,7 +22,6 @@ MainWindow::MainWindow(QWidget* parent)
     connect(ui->btn_seven,  &QPushButton::clicked, this, &MainWindow::numbers_clicked);
     connect(ui->btn_eight,  &QPushButton::clicked, this, &MainWindow::numbers_clicked);
     connect(ui->btn_nine,   &QPushButton::clicked, this, &MainWindow::numbers_clicked);
-
 }
 
 MainWindow::~MainWindow() {    // деструктор
@@ -156,7 +155,6 @@ void MainWindow::SetOperation(Operation op) {      // метод обрабат�
     calculator_.Set(0.0);                                            // обнуляем колькулятор
     second_number_str_ = input_number_;                             // сохран. строку
     ui->l_result->setText(second_number_str_);                     // обнавляем текст в l_result
-
 }
 
 void MainWindow::AddText(const QString& suffix) {          // метод отвечает за корректный ввод символа и точки в строку input_number!
@@ -179,12 +177,11 @@ void MainWindow::SetText(const QString& text) {    // метод сохраня�
     input_number_ = NormalizeNumber(text);       // применяем нормализацию числа
     ui->l_result->setText(input_number_);       // обновляем текст в l_result
     active_number_ = input_number_.toDouble(); // обновляем active_number_
-
 }
 
 void MainWindow::on_btn_clear_last_number_clicked() {    // удаление последней цифры
 
-    if(!del) {                         // если не true, блокируем удаление последней цифры
+    if(!del) {                         // если после нажатия на (=) не true, блокируем удаление последней цифры
         return;
     }
     if(!input_number_.isEmpty()) {  // если строка не пустая
@@ -202,8 +199,14 @@ void MainWindow::on_btn_point_clicked() {  // метод кнопки точки
     if(current_operation_ != Operation::NO_OPERATION && input_number_ == first_number_str_) { // если user выбрал операцию и не ввел число
         input_number_ = "";          // очищаем строку ввода
         SetText("");                // и начинаем ввод второго нового числа
-
+        return;
     }
+    if(new_input) {               // если новый ввод
+        SetText("0.");           // устанавливаем начальное знач. строки ввода  0.
+        new_input = false;      // меняем состояние(значение) ввода нового числа на false
+        return;
+    }
+
     AddText(".");                // добавляем точку (.)
 }
 
@@ -228,7 +231,6 @@ void MainWindow::on_btn_clear_clicked() {           // метод кнопки �
     ui->l_formula->setText("");                  // очищаем строку l_formula
     SetText("0");                               // очищаем и устанавливаем начальное значение 0 в l_result
     del = true;  // устанавливаем знач. флага true которое позволит после удаления открыть доступ к кнопке btn_clear_last_number_
-
 }
 
 void MainWindow::on_btn_pow_clicked() {               // (^)
@@ -302,7 +304,6 @@ void MainWindow::on_btn_mStore_clicked() {       // метод сохранен�
     in_memory = true;                        // устанавливам знач true, которое указывает, что в памяти есть знач
     ui->l_memory->setText("M");             // выводим букву M и указваем user, что число сохранено
     new_input = true;                      // указываем, что начался новый ввод
-
 }
 
 void MainWindow::on_btn_mRecall_clicked() {    // метод выводит в l_result сохраненное число из памяти MS!
@@ -323,6 +324,7 @@ void MainWindow::on_btn_mRecall_clicked() {    // метод выводит в l
     first_number_ = active_number_;                   // обновляем первое число
     first_number_str_ = mem_str;                     // число из памяти делаем  новым первым числом
     new_input = true;                               // указываем, что начался новый ввод
+    del = false;                                   // при нажатии на (MR) меняем знач. флага и блокируем кнопку удаления послед. цифры
 }
 
 void MainWindow::on_btn_mClear_clicked() {      // метод очищает память!
