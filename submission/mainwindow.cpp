@@ -4,7 +4,6 @@
 #include <cmath>
 
 
-
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);                 // связываем все элементы из ui файла с окном
@@ -12,7 +11,7 @@ MainWindow::MainWindow(QWidget* parent)
     ui->l_memory->setText("");       //  очищаем поле памяти, убираем (M)
     ui->l_formula->setText("");     //  очищаем поле в l_formula
 
-    //указ. на обьект       сигнал при нажат.  ук.на класс  метод в классе вызывается при нажатии на люб. кнопку
+    // указ на обьект       сигнал при нажат.  ук.на класс  метод в классе вызывается при нажатии на люб. кнопку
     connect(ui->btn_zero,   &QPushButton::clicked, this, &MainWindow::numbers_clicked);
     connect(ui->btn_one,    &QPushButton::clicked, this, &MainWindow::numbers_clicked);
     connect(ui->btn_two,    &QPushButton::clicked, this, &MainWindow::numbers_clicked);
@@ -23,6 +22,7 @@ MainWindow::MainWindow(QWidget* parent)
     connect(ui->btn_seven,  &QPushButton::clicked, this, &MainWindow::numbers_clicked);
     connect(ui->btn_eight,  &QPushButton::clicked, this, &MainWindow::numbers_clicked);
     connect(ui->btn_nine,   &QPushButton::clicked, this, &MainWindow::numbers_clicked);
+
 }
 
 MainWindow::~MainWindow() {    // деструктор
@@ -126,12 +126,14 @@ void MainWindow::numbers_clicked() {                    //  метод отве�
 
     QString digit = btn->text();                   // получаем цифру кноки
 
-    if (new_input) {                             // если выбрано новое число
-        input_number_.clear();                  // удаляем предыдущее число
+    if (!isTypingNumber_) {                      // если не введено новое число
+        input_number_.clear();                  // убираем стартовый "0"
         SetText("");                           // устанавливаем пустую строку
-        new_input = false;                    // уставливае на знач. нового числа флаг !> false
+        isTypingNumber_ = true;               // если число введено
+        new_input = false;                   // уставливае на знач. нового числа флаг !> false
+
     }
-      AddText(digit);                       //  добавляем цифру
+    AddText(digit);                       //  добавляем цифру
 }
 
 void MainWindow::SetOperation(Operation op) {      // метод обрабатывает выбор операции +, −, ×, ÷, ^ и подготавливает к вводу второе число!
@@ -156,6 +158,8 @@ void MainWindow::SetOperation(Operation op) {      // метод обрабат�
     calculator_.Set(0.0);                                            // обнуляем колькулятор
     second_number_str_ = input_number_;                             // сохран. строку
     ui->l_result->setText(second_number_str_);                     // обнавляем текст в l_result
+    isTypingNumber_ = false;                                      // флаг который указывает начал ли user ввод чисел
+
 }
 
 void MainWindow::AddText(const QString& suffix) {          // метод отвечает за корректный ввод символа и точки в строку input_number!
@@ -170,6 +174,7 @@ void MainWindow::AddText(const QString& suffix) {          // метод отв�
 
         SetText(input_number_ + suffix);        // во всех остальных случаях просто дописываем символ
     }
+
 }
 
 void MainWindow::SetText(const QString& text) {    // метод сохраняет и отображает результат в элементе интерфейса l_result
@@ -177,6 +182,7 @@ void MainWindow::SetText(const QString& text) {    // метод сохраня�
     input_number_ = NormalizeNumber(text);       // применяем нормализацию числа
     ui->l_result->setText(input_number_);       // обновляем текст в l_result
     active_number_ = input_number_.toDouble(); // обновляем active_number_
+
 }
 
 void MainWindow::on_btn_clear_last_number_clicked() {    // удаление последней цифры
@@ -202,21 +208,29 @@ void MainWindow::on_btn_point_clicked() {  // метод кнопки точки
         return;
     }
     if(new_input) {               // если новый ввод
-        SetText("0.");           // устанавливаем начальное знач. строки ввода ноль и точка -> (0.)
+        SetText("0.");           // устанавливаем начальное знач. строки ввода ноль и точку -> (0.)
         new_input = false;      // меняем состояние(значение) ввода нового числа на false
         return;
     }
 
+
     AddText(".");                // добавляем точку (.)
 }
 
-void MainWindow::on_btn_plus_minus_clicked() {        // метод кнопки плюс-минус (+, -)
+void MainWindow::on_btn_plus_minus_clicked() {        // метод кнопки плюс-минус (+,-)
 
     if (!std::isfinite(active_number_)) {           // если nan и inf, кнопка (+ -) ничего не далает
         return;
     }
-    if (input_number_ == "0" ) {                  // если в строке ввода число 0
-        return;                                  // ничего не делаем
+
+    if (!isTypingNumber_) {                      // если user еще не начал ввод, то запрет. на -0
+
+        return;                                
+    }
+
+    if(input_number_ == "0") {               // если в строке ввода число 0
+
+        return;                            // ничего не делаем
     }
 
     if (input_number_.startsWith('-')) {        // если число изначально с минусом
@@ -234,6 +248,8 @@ void MainWindow::on_btn_clear_clicked() {           // метод кнопки �
     ui->l_formula->setText("");                  // очищаем строку l_formula
     SetText("0");                               // очищаем и устанавливаем начальное значение 0 в l_result
     del = true;  // устанавливаем знач. флага true которое позволит после удаления открыть доступ к кнопке btn_clear_last_number_
+    isTypingNumber_ = false;                  // флаг который указывает начал ли user ввод чисел
+
 }
 
 void MainWindow::on_btn_pow_clicked() {               // (^)
@@ -270,7 +286,7 @@ void MainWindow::on_btn_equals_clicked() {                 //  метод кно
         return;
     }
 
-    double second_number;                                // создаем локал. переменую которая хранит второе число
+    double second_number;                          // создаем локал. переменую которая хранит второе число
 
     if (input_number_.isEmpty()) {                     // если user не ввел второе число
         second_number = active_number_;               // используем текущее отображаемое число
@@ -295,9 +311,11 @@ void MainWindow::on_btn_equals_clicked() {                 //  метод кно
 
     del = false;                                          // при нажатии на (=) меняем знач. флага и блокируем кнопку удаления послед. цифры
     new_input = true;                                    // указываем, что начался новый ввод
+    isTypingNumber_ = false;                            //  флаг который указывает начал ли user ввод чисел
+
 }
 
-void MainWindow::on_btn_mStore_clicked() {        // метод сохраняет текущее число в память!
+void MainWindow::on_btn_mStore_clicked() {       // метод сохраненяет текущее число в память!
 
     if (!std::isfinite(active_number_)) {
         return;
@@ -306,6 +324,8 @@ void MainWindow::on_btn_mStore_clicked() {        // метод сохраняе
     in_memory = true;                        // устанавливам знач true, которое указывает, что в памяти есть знач
     ui->l_memory->setText("M");             // выводим букву M и указваем user, что число сохранено
     new_input = true;                      // указываем, что начался новый ввод
+                            // при нажатии на (MS) меняем знач. флага и блокируем кнопку удаления послед. цифры
+
 }
 
 void MainWindow::on_btn_mRecall_clicked() {    // метод выводит в l_result сохраненное число из памяти MS!
@@ -335,4 +355,3 @@ void MainWindow::on_btn_mClear_clicked() {      // метод очищает п�
     in_memory = false;          // значение флага false
     ui->l_memory->setText(""); // убираем заглавную букву M из l_memory
 }
-
