@@ -24,6 +24,60 @@
   <property name="windowTitle">
    <string>Калькулятор</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui-&gt;setupUi(this);
+
+    // Тёмная тема (чёрный фон + белый/серый текст)
+    setStyleSheet(R&quot;(
+        QWidget {
+            background-color: #121212;          /* очень тёмный фон */
+            color: #e0e0e0;                     /* светлый текст */
+            font-family: &quot;Segoe UI&quot;, sans-serif;
+        }
+
+        QPushButton {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        QPushButton:hover {
+            background-color: #2d2d2d;
+        }
+
+        QPushButton:pressed {
+            background-color: #3a3a3a;
+        }
+
+        QLineEdit, QLabel {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            border: 1px solid #444444;
+            border-radius: 6px;
+            padding: 6px;
+        }
+
+        /* Для дисплея результата (l_result) — можно сделать ещё темнее */
+        #l_result {
+            background-color: #0d0d0d;
+            color: #00ff9f;                 /* зелёный цвет для результата */
+            font-size: 28px;
+            border: none;
+        }
+
+        #l_formula {
+            color: #aaaaaa;
+            font-size: 16px;
+        }
+    )&quot;);
+}</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_3">
     <item row="0" column="0">
